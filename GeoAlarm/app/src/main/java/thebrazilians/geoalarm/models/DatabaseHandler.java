@@ -77,15 +77,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public Activity getActivity(){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_ACTIVITY, new String[] {KEY_ID ,KEY_TITLE, KEY_DESCRIPTION, KEY_DATE}, KEY_ID + "=?", new String [] {String.valueOf(id)}, null, null, null, null);
+        Cursor cursor = db.query(TABLE_ACTIVITY, new String[] {KEY_ID ,KEY_NAME, KEY_DESCRIPTION, KEY_MONTH,KEY_}, KEY_ID + "=?", new String [] {String.valueOf(id)}, null, null, null, null);
 
         if(cursor != null)
             cursor.moveToFirst();
 
         Contact contact = new Contact(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
     }
-=======
-
->>>>>>> origin/models
 
 }
