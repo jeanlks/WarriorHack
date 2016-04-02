@@ -6,14 +6,15 @@ import java.util.Date;
  * Created by Jean on 4/2/16.
  */
 public class Activity {
-    String title;
-    String description;
-    Date date;
+    private int ID;
+    private String title;
+    private String description;
+    private alarmDate alarmDate;
 
-    public Activity(String title, String description, Date date) {
+    public Activity(String title, String description, alarmDate alarmDate) {
         this.title = title;
         this.description = description;
-        this.date = date;
+        this.alarmDate = alarmDate;
     }
 
     public String getTitle() {
@@ -32,11 +33,11 @@ public class Activity {
         this.description = description;
     }
 
-    public Date getDate() {
-        return date;
+    public alarmDate getDate() {
+        return alarmDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(alarmDate alarmDate) {
+        this.alarmDate = alarmDate;
     }
 }
