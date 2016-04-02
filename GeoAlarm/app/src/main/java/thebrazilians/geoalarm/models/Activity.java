@@ -9,6 +9,10 @@ public class Activity {
     private String description;
     private alarmDate alarmDate;
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     public Activity(int ID,String name, String description, alarmDate alarmDate) {
         this.ID = ID;
         this.name = name;

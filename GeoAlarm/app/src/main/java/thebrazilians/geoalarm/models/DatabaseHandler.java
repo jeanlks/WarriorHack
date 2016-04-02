@@ -125,6 +125,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return activityList;
     }
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
     public int getActivityCount(){
         String countQuery = "SELECT  * FROM " + TABLE_ACTIVITY;
@@ -142,6 +146,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+<<<<<<< Updated upstream
     public int updateActivity(Activity activity){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -159,4 +164,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
 
+=======
+>>>>>>> Stashed changes
 }
