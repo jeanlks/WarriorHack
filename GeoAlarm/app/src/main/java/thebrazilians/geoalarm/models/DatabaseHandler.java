@@ -125,6 +125,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return activityList;
     }
+<<<<<<< HEAD
+=======
 
     public int getActivityCount(){
         String countQuery = "SELECT  * FROM " + TABLE_ACTIVITY;
@@ -141,4 +143,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[] { String.valueOf(activity.getID()) });
         db.close();
     }
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> origin/models
+>>>>>>> origin/models
 }

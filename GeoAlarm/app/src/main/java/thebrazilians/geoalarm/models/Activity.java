@@ -9,7 +9,10 @@ public class Activity {
     private String description;
     private alarmDate alarmDate;
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> origin/models
     public Activity(int ID,String name, String description, alarmDate alarmDate) {
         this.ID = ID;
         this.name = name;
