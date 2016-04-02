@@ -11,7 +11,8 @@ public class Activity {
     private String description;
     private alarmDate alarmDate;
 
-    public Activity(String title, String description, alarmDate alarmDate) {
+    public Activity(int ID,String title, String description, alarmDate alarmDate) {
+        this.ID = ID;
         this.title = title;
         this.description = description;
         this.alarmDate = alarmDate;

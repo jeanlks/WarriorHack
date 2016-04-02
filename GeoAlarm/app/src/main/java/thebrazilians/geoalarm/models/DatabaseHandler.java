@@ -2,6 +2,7 @@ package thebrazilians.geoalarm.models;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -79,18 +80,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Activity getActivity(){
+    public Activity getActivity(int id){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_ACTIVITY, new String[] {KEY_ID ,KEY_NAME, KEY_DESCRIPTION, KEY_MONTH,KEY_}, KEY_ID + "=?", new String [] {String.valueOf(id)}, null, null, null, null);
+        Cursor cursor = db.query(TABLE_ACTIVITY, new String[] {KEY_ID ,KEY_NAME, KEY_DESCRIPTION, KEY_MONTH,KEY_DAY, KEY_YEAR,
+                                                               KEY_HOUR, KEY_MINUTES}, KEY_ID + "=?", new String [] {String.valueOf(id)},
+                                                               null, null, null, null);
 
         if(cursor != null)
             cursor.moveToFirst();
 
-        Contact contact = new Contact(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
-    }
-<<<<<<< HEAD
-=======
+        Activity activity = new Activity(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2),
+                                                       new alarmDate(Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)),
+                                                       Integer.parseInt(cursor.getString(5)),Integer.parseInt(cursor.getString(6)),
+                                                       Integer.parseInt(cursor.getString(7))));
 
->>>>>>> origin/models
+        return activity;
+    }
+
+    
 
 }
