@@ -8,7 +8,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
