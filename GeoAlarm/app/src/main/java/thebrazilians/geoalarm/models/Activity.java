@@ -8,25 +8,53 @@ public class Activity {
     private String name;
     private String description;
     private alarmDate alarmDate;
+    private double latitude;
+    private double longitude;
+    private String isRepeatable;
 
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
-    public Activity(int ID,String name, String description, alarmDate alarmDate) {
+    public Activity(int ID,String name, String description, alarmDate alarmDate,double latitude, double longitude, String isRepeatable) {
         this.ID = ID;
         this.name = name;
         this.description = description;
         this.alarmDate = alarmDate;
+        this.longitude = longitude;
+        this.isRepeatable = isRepeatable;
     }
-    public Activity(String name, String description, alarmDate alarmDate) {
+    public Activity(String name, String description, alarmDate alarmDate,double latitude, double longitude,String isRepeatable) {
         this.name = name;
         this.description = description;
         this.alarmDate = alarmDate;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.isRepeatable = isRepeatable;
     }
 
     public Activity(){
 
+    }
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getIsRepeatable() {
+        return isRepeatable;
+    }
+
+    public void setIsRepeatable(String isRepeatable) {
+        this.isRepeatable = isRepeatable;
     }
 
     public int getID() {

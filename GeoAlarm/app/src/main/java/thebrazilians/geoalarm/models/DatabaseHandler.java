@@ -25,6 +25,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_YEAR ="year";
     private static final String KEY_HOUR ="hour";
     private static final String KEY_MINUTES ="minutes";
+    private static final String KEY_LATITUDE = "latitude";
+    private static final String KEY_LONGITUDE = "longitude";
     private static final String KEY_isRepeatale = "isRepeatable";
 
 
@@ -48,7 +50,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_ACTIVITY_TABLE = "CREATE TABLE " + TABLE_ACTIVITY + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT,"
                 + KEY_DESCRIPTION + " TEXT, " +KEY_MONTH+" INTEGER,"+KEY_DAY+" INTEGER,"+KEY_YEAR+" INTEGER, "+KEY_HOUR+" INTEGER,"
-                +KEY_MINUTES+" INTEGER" +KEY_isRepeatale+ " TEXT" +");";
+                +KEY_MINUTES+" INTEGER, "+KEY_LATITUDE+" TEXT,"+KEY_LONGITUDE+" TEXT," +KEY_isRepeatale+ " TEXT" +");";
         db.execSQL(CREATE_ACTIVITY_TABLE);
     }
 
@@ -75,6 +77,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_YEAR, activity.getDate().getYear());
         values.put(KEY_HOUR,activity.getDate().getHour());
         values.put(KEY_MINUTES,activity.getDate().getMinutes());
+        values.put(KEY_LATITUDE,activity.getLatitude());
+        values.put(KEY_LONGITUDE,activity.getLongitude());
+        values.put(KEY_isRepeatale,activity.getIsRepeatable());
 
         db.insert(TABLE_ACTIVITY, null, values);
         db.close();
@@ -83,7 +88,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public Activity getActivity(int id){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_ACTIVITY, new String[] {KEY_ID ,KEY_NAME, KEY_DESCRIPTION, KEY_MONTH,KEY_DAY, KEY_YEAR,
-                                                               KEY_HOUR, KEY_MINUTES}, KEY_ID + "=?", new String [] {String.valueOf(id)},
+                                                               KEY_HOUR, KEY_MINUTES,KEY_LATITUDE, KEY_LONGITUDE}, KEY_ID + "=?", new String [] {String.valueOf(id)},
                                                                null, null, null, null);
 
         if(cursor != null)
@@ -94,7 +99,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                                        Integer.parseInt(cursor.getString(4)),
                                                        Integer.parseInt(cursor.getString(5)),
                                                        Integer.parseInt(cursor.getString(6)),
-                                                       Integer.parseInt(cursor.getString(7))));
+                                                       Integer.parseInt(cursor.getString(7))),
+                                                       Double.parseDouble(cursor.getString(8)),
+                                                       Double.parseDouble(cursor.getString(9)),
+                                                               cursor.getString(10));
 
         return activity;
     }
@@ -116,8 +124,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 activity.setName(cursor.getString(1));
                 activity.setDescription(cursor.getString(2));
                 activity.setDate(new alarmDate(Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)),
-                        Integer.parseInt(cursor.getString(5)),Integer.parseInt(cursor.getString(6)),
+                        Integer.parseInt(cursor.getString(5)), Integer.parseInt(cursor.getString(6)),
                         Integer.parseInt(cursor.getString(7))));
+                activity.setLatitude(Double.parseDouble(cursor.getString(8)));
+                activity.setLongitude(Double.parseDouble(cursor.getString(9)));
+                activity.setIsRepeatable(cursor.getString(10));
                 // Adding contact to list
                 activityList.add(activity);
             } while (cursor.moveToNext());
@@ -125,10 +136,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return activityList;
     }
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 
     public int getActivityCount(){
         String countQuery = "SELECT  * FROM " + TABLE_ACTIVITY;
@@ -146,7 +154,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-<<<<<<< Updated upstream
     public int updateActivity(Activity activity){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -158,12 +165,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_YEAR, activity.getDate().getYear());
         values.put(KEY_HOUR,activity.getDate().getHour());
         values.put(KEY_MINUTES,activity.getDate().getMinutes());
+        values.put(KEY_LATITUDE,activity.getLatitude());
+        values.put(KEY_LONGITUDE,activity.getLongitude());
+        values.put(KEY_isRepeatale,activity.getIsRepeatable());
 
         return db.update(TABLE_ACTIVITY, values, KEY_ID + " = ?", new String[]{String.valueOf(activity.getID())});
     }
 
 
 
-=======
->>>>>>> Stashed changes
 }

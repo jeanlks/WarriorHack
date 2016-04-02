@@ -35,28 +35,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          * */
         // Inserting Contacts
         Log.d("Insert: ", "Inserting ..");
-        Activity ac =new Activity("test", "just testing", new alarmDate(03, 10, 2016, 14, 00))  ;
+        Activity ac =new Activity("test", "just testing", new alarmDate(03, 10, 2016, 14, 00),14.00,35.00,"rue")  ;
         db.addActivity(ac);
-        db.addActivity(new Activity("Jean", "just testando", new alarmDate(12, 10, 2016, 10, 00)));
+
         // Reading all contacts
         Log.d("Reading: ", "Reading all contacts..");
         List<Activity> activities = db.getAllActivities();
         Activity ac1= new Activity();
         for (Activity cn : activities) {
              ac1 = cn;
-            String log = "Id: "+cn.getID()+" ,Name: " + cn.getName() + " description"+cn.getDescription() +"year :"+cn.getDate().getYear() +"month "+cn.getDate().getMonth();
-            // Writing Contacts to log
+            String log = "Id: "+cn.getID()+" ,Name: " + cn.getName() + " description"+cn.getDescription() +"year :"+cn.getDate().getYear() +"month "+cn.getDate().getMonth()+"latitude "+cn.getLatitude();
+           // Writing Contacts to log
             Log.d("Name: ", log);
         }
 
 
-        db.deleteActivity(ac1);
-
-        for (Activity cn : activities) {
-            String log = "Id: "+cn.getID()+" ,Name: " + cn.getName() + " description"+cn.getDescription() +"year :"+cn.getDate().getYear() +"month "+cn.getDate().getMonth();
-            // Writing Contacts to log
-            Log.d("Name: ", log);
-        }
+       
     }
 
 
