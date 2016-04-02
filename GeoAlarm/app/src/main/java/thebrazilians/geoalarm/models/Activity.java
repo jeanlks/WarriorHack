@@ -9,12 +9,22 @@ public class Activity {
     private String description;
     private alarmDate alarmDate;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/models
     public Activity(int ID,String name, String description, alarmDate alarmDate) {
         this.ID = ID;
         this.name = name;
         this.description = description;
         this.alarmDate = alarmDate;
     }
+    public Activity(String name, String description, alarmDate alarmDate) {
+        this.name = name;
+        this.description = description;
+        this.alarmDate = alarmDate;
+    }
+
     public Activity(){
 
     }
@@ -27,7 +37,7 @@ public class Activity {
         this.ID = ID;
     }
 
-    public String getTitle() {
+    public String getName() {
         return name;
     }
 

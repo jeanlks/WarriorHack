@@ -3,8 +3,6 @@ package thebrazilians.geoalarm.models;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
-
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -49,7 +47,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_ACTIVITY_TABLE = "CREATE TABLE " + TABLE_ACTIVITY + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT,"
-                + KEY_DESCRIPTION + " TEXT, " +KEY_MONTH+"INTEGER,"+KEY_DAY+" INTEGER,"+KEY_YEAR+"INTEGER, "+KEY_HOUR+"INTEGER,"
+                + KEY_DESCRIPTION + " TEXT, " +KEY_DAY+"INTEGER,"+KEY_MONTH+" INTEGER,"+KEY_YEAR+"INTEGER, "+KEY_HOUR+"INTEGER,"
                 +KEY_MINUTES+"INTEGER" +KEY_isRepeatale+ "TEXT" +")";
         db.execSQL(CREATE_ACTIVITY_TABLE);
     }
@@ -70,7 +68,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, activity.getTitle());
+        values.put(KEY_NAME, activity.getName());
         values.put(KEY_DESCRIPTION, activity.getDescription());
         values.put(KEY_MONTH, activity.getDate().getMonth());
         values.put(KEY_DAY, activity.getDate().getDay());
@@ -104,13 +102,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public List<Activity> getAllActivities(){
         List<Activity> activityList = new ArrayList<Activity>();
-        // Select All Query
+
         String selectQuery = "SELECT  * FROM " + TABLE_ACTIVITY;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        // looping through all rows and adding to list
+
         if (cursor.moveToFirst()) {
             do {
                 Activity activity = new Activity();
@@ -125,7 +123,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        // return contact list
         return activityList;
     }
+<<<<<<< HEAD
+=======
+
+    public int getActivityCount(){
+        String countQuery = "SELECT  * FROM " + TABLE_ACTIVITY;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        cursor.close();
+
+<<<<<<< Updated upstream
+>>>>>>> origin/models
+=======
+        return cursor.getCount();
+    }
+
+    public void deleteContact(Activity activity) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_ACTIVITY, KEY_ID + " = ?",
+                new String[] { String.valueOf(activity.getID()) });
+        db.close();
+    }
+>>>>>>> Stashed changes
+>>>>>>> origin/models
 }
