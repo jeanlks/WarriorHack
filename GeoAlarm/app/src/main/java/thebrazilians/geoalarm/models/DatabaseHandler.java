@@ -101,8 +101,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return activity;
     }
 
-<<<<<<< HEAD
-=======
 
     public List<Activity> getAllActivities(){
         List<Activity> activityList = new ArrayList<Activity>();
@@ -121,7 +119,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 activity.setDescription(cursor.getString(2));
                 activity.setDate(new alarmDate(Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)),
                         Integer.parseInt(cursor.getString(5)),Integer.parseInt(cursor.getString(6)),
-                        Integer.parseInt(cursor.getString(7)));
+                        Integer.parseInt(cursor.getString(7))));
                 // Adding contact to list
                 activityList.add(activity);
             } while (cursor.moveToNext());
@@ -130,7 +128,4 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return contact list
         return activityList;
     }
-
-
->>>>>>> origin/models
 }

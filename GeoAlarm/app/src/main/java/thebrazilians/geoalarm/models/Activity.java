@@ -9,14 +9,9 @@ public class Activity {
     private String description;
     private alarmDate alarmDate;
 
-<<<<<<< Updated upstream
-    public Activity(int ID,String title, String description, alarmDate alarmDate) {
+    public Activity(int ID,String name, String description, alarmDate alarmDate) {
         this.ID = ID;
-        this.title = title;
-=======
-    public Activity(String title, String description, alarmDate alarmDate) {
         this.name = name;
->>>>>>> Stashed changes
         this.description = description;
         this.alarmDate = alarmDate;
     }
