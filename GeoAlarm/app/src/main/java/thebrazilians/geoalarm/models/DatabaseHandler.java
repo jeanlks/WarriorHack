@@ -20,7 +20,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_NAME = "name";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_MONTH ="month";
-    private static final String KEY_DATE ="date";
+    private static final String KEY_DAY ="day";
     private static final String KEY_YEAR ="year";
     private static final String KEY_HOUR ="hour";
     private static final String KEY_MINUTES ="minutes";
@@ -46,7 +46,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_ACTIVITY_TABLE = "CREATE TABLE " + TABLE_ACTIVITY + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT,"
-                + KEY_DESCRIPTION + " TEXT, " +KEY_MONTH+"TEXT,"+KEY_DATE+" TEXT,"+KEY_YEAR+"TEXT, "+KEY_HOUR+"TEXT,"
+                + KEY_DESCRIPTION + " TEXT, " +KEY_MONTH+"TEXT,"+KEY_DAY+" TEXT,"+KEY_YEAR+"TEXT, "+KEY_HOUR+"TEXT,"
                 +KEY_MINUTES+"TEXT" +KEY_isRepeatale+ "TEXT" +")";
         db.execSQL(CREATE_ACTIVITY_TABLE);
     }
@@ -57,7 +57,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      onCreate(db);
     }
 
-<<<<<<< HEAD
+
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         super.onDowngrade(db, oldVersion, newVersion);
@@ -68,8 +68,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, activity.getTitle());
-        values.put(KEY_NAME, activity.getDescription());
-        values.put(KEY_NAME, activity.getDate());
+        values.put(KEY_DESCRIPTION, activity.getDescription());
+        values.put(KEY_MONTH, activity.getDate().getMonth());
+        values.put(KEY_DAY, activity.getDate().getDay());
+        values.put(KEY_YEAR, activity.getDate().getYear());
+        values.put(KEY_HOUR,activity.getDate().getHour());
+        values.put(KEY_MINUTES,activity.getDate().getMinutes());
 
         db.insert(TABLE_ACTIVITY, null, values);
         db.close();
@@ -84,8 +88,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         Contact contact = new Contact(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
     }
-=======
 
->>>>>>> origin/models
 
 }
