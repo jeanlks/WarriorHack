@@ -4,10 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
+
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Jean on 4/2/16.
@@ -47,8 +49,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_ACTIVITY_TABLE = "CREATE TABLE " + TABLE_ACTIVITY + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT,"
-                + KEY_DESCRIPTION + " TEXT, " +KEY_MONTH+"TEXT,"+KEY_DAY+" TEXT,"+KEY_YEAR+"TEXT, "+KEY_HOUR+"TEXT,"
-                +KEY_MINUTES+"TEXT" +KEY_isRepeatale+ "TEXT" +")";
+                + KEY_DESCRIPTION + " TEXT, " +KEY_MONTH+"INTEGER,"+KEY_DAY+" INTEGER,"+KEY_YEAR+"INTEGER, "+KEY_HOUR+"INTEGER,"
+                +KEY_MINUTES+"INTEGER" +KEY_isRepeatale+ "TEXT" +")";
         db.execSQL(CREATE_ACTIVITY_TABLE);
     }
 
@@ -99,4 +101,36 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return activity;
     }
 
+<<<<<<< HEAD
+=======
+
+    public List<Activity> getAllActivities(){
+        List<Activity> activityList = new ArrayList<Activity>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_ACTIVITY;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Activity activity = new Activity();
+                activity.setID(Integer.parseInt(cursor.getString(0)));
+                activity.setName(cursor.getString(1));
+                activity.setDescription(cursor.getString(2));
+                activity.setDate(new alarmDate(Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)),
+                        Integer.parseInt(cursor.getString(5)),Integer.parseInt(cursor.getString(6)),
+                        Integer.parseInt(cursor.getString(7)));
+                // Adding contact to list
+                activityList.add(activity);
+            } while (cursor.moveToNext());
+        }
+
+        // return contact list
+        return activityList;
+    }
+
+
+>>>>>>> origin/models
 }
