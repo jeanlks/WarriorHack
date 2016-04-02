@@ -125,8 +125,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return activityList;
     }
-<<<<<<< HEAD
-=======
 
     public int getActivityCount(){
         String countQuery = "SELECT  * FROM " + TABLE_ACTIVITY;
@@ -137,15 +135,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor.getCount();
     }
 
-    public void deleteContact(Activity activity) {
+    public void deleteActivity(Activity activity) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ACTIVITY, KEY_ID + " = ?",
                 new String[] { String.valueOf(activity.getID()) });
         db.close();
     }
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> origin/models
->>>>>>> origin/models
+
+    public int updateActivity(Activity activity){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, activity.getName());
+        values.put(KEY_DESCRIPTION, activity.getDescription());
+        values.put(KEY_MONTH, activity.getDate().getMonth());
+        values.put(KEY_DAY, activity.getDate().getDay());
+        values.put(KEY_YEAR, activity.getDate().getYear());
+        values.put(KEY_HOUR,activity.getDate().getHour());
+        values.put(KEY_MINUTES,activity.getDate().getMinutes());
+
+        return db.update(TABLE_ACTIVITY, values, KEY_ID + " = ?", new String[]{String.valueOf(activity.getID())});
+    }
+
+
+
 }
