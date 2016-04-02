@@ -90,13 +90,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
 
         Activity activity = new Activity(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2),
-                                                       new alarmDate(Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)),
-                                                       Integer.parseInt(cursor.getString(5)),Integer.parseInt(cursor.getString(6)),
+                                                       new alarmDate(Integer.parseInt(cursor.getString(3)),
+                                                       Integer.parseInt(cursor.getString(4)),
+                                                       Integer.parseInt(cursor.getString(5)),
+                                                       Integer.parseInt(cursor.getString(6)),
                                                        Integer.parseInt(cursor.getString(7))));
 
         return activity;
     }
-
-    
 
 }
