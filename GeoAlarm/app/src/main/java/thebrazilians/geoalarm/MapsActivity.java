@@ -13,9 +13,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
-import thebrazilians.geoalarm.models.Activity;
 import thebrazilians.geoalarm.models.DatabaseHandler;
-import thebrazilians.geoalarm.models.alarmDate;
+import thebrazilians.geoalarm.models.*;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -37,13 +36,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Inserting Contacts
         Log.d("Insert: ", "Inserting ..");
         db.addActivity(new Activity("test", "just testing", new alarmDate(03, 10, 2016, 14, 00)));
-
+        db.addActivity(new Activity("test234", "just testando", new alarmDate(12, 10, 2016, 10, 00)));
         // Reading all contacts
         Log.d("Reading: ", "Reading all contacts..");
         List<Activity> activities = db.getAllActivities();
 
         for (Activity cn : activities) {
-            String log = "Id: "+cn.getID()+" ,Name: " + cn.getName();
+            String log = "Id: "+cn.getID()+" ,Name: " + cn.getName() + " description"+cn.getDescription() +"year :"+cn.getDate().getYear() +"month "+cn.getDate().getMonth();
             // Writing Contacts to log
             Log.d("Name: ", log);
         }

@@ -47,8 +47,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_ACTIVITY_TABLE = "CREATE TABLE " + TABLE_ACTIVITY + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT,"
-                + KEY_DESCRIPTION + " TEXT, " +KEY_DAY+"INTEGER,"+KEY_MONTH+" INTEGER,"+KEY_YEAR+"INTEGER, "+KEY_HOUR+"INTEGER,"
-                +KEY_MINUTES+"INTEGER" +KEY_isRepeatale+ "TEXT" +")";
+                + KEY_DESCRIPTION + " TEXT, " +KEY_MONTH+" INTEGER,"+KEY_DAY+" INTEGER,"+KEY_YEAR+" INTEGER, "+KEY_HOUR+" INTEGER,"
+                +KEY_MINUTES+" INTEGER" +KEY_isRepeatale+ " TEXT" +");";
         db.execSQL(CREATE_ACTIVITY_TABLE);
     }
 
@@ -99,8 +99,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return activity;
     }
 
-<<<<<<< HEAD
-=======
 
     public List<Activity> getAllActivities(){
         List<Activity> activityList = new ArrayList<Activity>();
@@ -134,9 +132,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(countQuery, null);
         cursor.close();
 
-<<<<<<< Updated upstream
->>>>>>> origin/models
-=======
         return cursor.getCount();
     }
 
@@ -146,5 +141,4 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[] { String.valueOf(activity.getID()) });
         db.close();
     }
->>>>>>> Stashed changes
 }
