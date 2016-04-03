@@ -208,7 +208,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //        db.close();
 //    }
 
+<<<<<<< Updated upstream
     public int updateActivity(Activity activity, int markerID) {
+=======
+    public int updateActivity(Activity activity,int markerID) {
+>>>>>>> Stashed changes
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -219,7 +223,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_YEAR, activity.getAlarmDate().getYear());
         values.put(KEY_HOUR, activity.getAlarmDate().getHour());
         values.put(KEY_MINUTES, activity.getAlarmDate().getMinutes());
+<<<<<<< Updated upstream
         values.put(KEY_ID_MARKER, markerID);
+=======
+        values.put(KEY_ID_MARKER,markerID);
+>>>>>>> Stashed changes
         values.put(KEY_isRepeatale, activity.getIsRepeatable());
 
         return db.update(TABLE_ACTIVITY, values, KEY_ID_ACTIVITY+ " = ?", new String[]{String.valueOf(activity.getID())});
