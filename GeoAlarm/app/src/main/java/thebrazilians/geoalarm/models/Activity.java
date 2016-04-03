@@ -8,45 +8,35 @@ public class Activity {
     private String name;
     private String description;
     private AlarmDate AlarmDate;
-    private double latitude;
-    private double longitude;
     private String isRepeatable;
+    private MarkerActivity markerActivity;
 
-
-    public Activity(int ID,String name, String description, AlarmDate AlarmDate,double latitude, double longitude, String isRepeatable) {
+    public Activity(int ID,String name, String description, AlarmDate AlarmDate,MarkerActivity markerActivity, String isRepeatable) {
         this.ID = ID;
         this.name = name;
         this.description = description;
         this.AlarmDate = AlarmDate;
-        this.longitude = longitude;
+        this.markerActivity = markerActivity;
         this.isRepeatable = isRepeatable;
     }
-    public Activity(String name, String description, AlarmDate AlarmDate,double latitude, double longitude,String isRepeatable) {
+    public Activity(String name, String description, AlarmDate AlarmDate,MarkerActivity markerActivity,String isRepeatable) {
         this.name = name;
         this.description = description;
         this.AlarmDate = AlarmDate;
-        this.latitude = latitude;
-        this.longitude = longitude;
+       this.markerActivity = markerActivity;
         this.isRepeatable = isRepeatable;
     }
 
     public Activity(){
 
     }
-    public double getLatitude() {
-        return latitude;
+
+    public MarkerActivity getMarkerActivity() {
+        return markerActivity;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setMarkerActivity(MarkerActivity markerActivity) {
+        this.markerActivity = markerActivity;
     }
 
     public String getIsRepeatable() {
@@ -81,11 +71,11 @@ public class Activity {
         this.description = description;
     }
 
-    public AlarmDate getDate() {
+    public AlarmDate getAlarmDate() {
         return AlarmDate;
     }
 
-    public void setDate(AlarmDate AlarmDate) {
+    public void setAlarmDate(AlarmDate AlarmDate) {
         this.AlarmDate = AlarmDate;
     }
 }
