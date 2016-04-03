@@ -1,15 +1,15 @@
 package thebrazilians.geoalarm;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.text.format.DateFormat;
 import android.widget.TextClock;
-import android.widget.TextView;
-import android.app.DialogFragment;
-import android.app.Dialog;
-import java.util.Calendar;
 import android.widget.TimePicker;
+
+import java.util.Calendar;
 
 import thebrazilians.geoalarm.models.Activity;
 
@@ -41,6 +41,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         TextClock tv = (TextClock) getActivity().findViewById(R.id.textClock);
         //Set a message for user
         //Display the user changed time on TextView
+
         tv.setText("");
 
         tv.setText(hourOfDay

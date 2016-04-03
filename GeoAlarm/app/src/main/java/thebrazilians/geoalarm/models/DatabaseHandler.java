@@ -120,6 +120,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
 
 
+
         if (cursor.moveToFirst()) {
             do {
                 Activity activity = new Activity();
@@ -135,8 +136,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         Double.parseDouble(cursor.getString(9)),
                         Double.parseDouble(cursor.getString(10))));
                 activity.setIsRepeatable(cursor.getString(11));
-                // Adding contact to list
                 activityList.add(activity);
+
             } while (cursor.moveToNext());
         }
 
