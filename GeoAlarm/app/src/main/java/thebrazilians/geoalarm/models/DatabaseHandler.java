@@ -126,6 +126,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 // Adding contact to list
                 markerList.add(markerActivity);
             } while (cursor.moveToNext());
+        }else{
+            return null;
         }
 
         // return contact list
@@ -152,31 +154,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public MarkerActivity checkForLocation(double latitude, double longitude) {
         MarkerActivity markerActivity = new MarkerActivity();
-        String selectQuery = "SELECT  * FROM " + TABLE_MARKER + " WHERE " + KEY_LONGITUDE + " = " + latitude + " AND " + KEY_LATITUDE + " = " + longitude;
+        String selectQuery = "SELECT  * FROM " + TABLE_MARKER + " WHERE " + KEY_LATITUDE+ " = " + latitude + " AND " + KEY_LONGITUDE + " = " + longitude;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
-        while(cursor.isNull(0) && !cursor.isAfterLast()){
-            cursor.moveToNext();
-        }
-
-        if(cursor.isAfterLast()) {
-            markerActivity = null;
-        } else {
-            markerActivity = new MarkerActivity();
-            markerActivity.setID(cursor.getInt(0));
-            markerActivity.setID(cursor.getString(1));
-        }
 
         if (cursor.moveToFirst()) {
             markerActivity.setID(cursor.getInt(0));
             markerActivity.setTitle(cursor.getString(1));
             markerActivity.setLatitude(cursor.getDouble(2));
             markerActivity.setLongitude(cursor.getDouble(3));
-        }
-
         return markerActivity;
+        } else {
+            return null;
+        }
     }
 
     public List<Activity> getAllActivitiesByID(int idMarker) {
@@ -217,7 +208,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //        db.close();
 //    }
 
-    public int updateActivity(Activity activity) {
+    public int updateActivity(Activity activity, int markerID) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -228,6 +219,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_YEAR, activity.getAlarmDate().getYear());
         values.put(KEY_HOUR, activity.getAlarmDate().getHour());
         values.put(KEY_MINUTES, activity.getAlarmDate().getMinutes());
+        values.put(KEY_ID_MARKER, markerID);
         values.put(KEY_isRepeatale, activity.getIsRepeatable());
 
         return db.update(TABLE_ACTIVITY, values, KEY_ID_ACTIVITY+ " = ?", new String[]{String.valueOf(activity.getID())});

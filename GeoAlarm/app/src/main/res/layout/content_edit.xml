@@ -11,10 +11,12 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="thebrazilians.geoalarm.EditActivity"
     tools:showIn="@layout/activity_edit">
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title"
+        android:text="Name of the Place"
         android:id="@+id/textView"
         android:textSize="20dp"
         android:layout_alignParentTop="true"
@@ -23,39 +25,93 @@
     <EditText
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:id="@+id/editTextTitleEdit"
+        android:id="@+id/editText"
         android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Description"
         android:id="@+id/textView2"
-        android:layout_below="@+id/editTextTitleEdit"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
         android:textSize="20dp"
-        />
+        android:layout_below="@+id/editText3"
+        android:layout_alignStart="@+id/textNameActivity" />
 
     <EditText
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:id="@+id/editTextDescriptionEdit"
-        android:layout_below="@+id/textView2"
-        android:layout_centerHorizontal="true"
+        android:id="@+id/editText2"
         android:lines="3"
         android:minLines="1"
-        />
+        android:layout_below="@+id/textView2"
+        android:layout_alignStart="@+id/editText3"
+        android:layout_alignEnd="@+id/editText3" />
+
+    <TextClock
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:id="@+id/textClock"
+        android:onClick="onButtonClicked"
+        android:layout_below="@+id/textView4"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Time"
+        android:id="@+id/textView4"
+        android:layout_below="@+id/editText2"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Activity Title"
+        android:id="@+id/textNameActivity"
+        android:textSize="20dp"
+        android:layout_below="@+id/editText"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText3"
+        android:layout_below="@+id/textNameActivity"
+        android:layout_alignStart="@+id/editText"
+        android:layout_alignEnd="@+id/editText" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Date"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/editTextDescriptionEdit"
+        android:textSize="20dp"
+        android:id="@+id/dateTextView"
+        android:layout_below="@+id/textClock"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00/00/00"
+        android:textSize="20dp"
+        android:id="@+id/displayDate"
+        android:layout_below="@+id/dateTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="35dp"
-        android:textSize="20dp"/>
+        android:onClick="showDatePickerDialog"
+        android:textColor="#000000" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:id="@+id/saveButton"
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/displayDate"
+        android:layout_alignStart="@+id/textView2" />
 
 </RelativeLayout>

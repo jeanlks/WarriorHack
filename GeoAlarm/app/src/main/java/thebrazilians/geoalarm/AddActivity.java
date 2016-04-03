@@ -64,8 +64,7 @@ public class AddActivity extends AppCompatActivity {
                                     Integer.parseInt(date.getText().toString().substring(3, 4)),
                                     Integer.parseInt(date.getText().toString().substring(6, 7)),
                                     Integer.parseInt(time.getText().toString().substring(0, 1)),
-                                    Integer.parseInt(time.getText().toString().substring(3, 4))),
-                            "true"
+                                    Integer.parseInt(time.getText().toString().substring(3, 4))),"true"
                     );
 
                     if(params.containsKey("marker_activity_id")) {

@@ -17,7 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import thebrazilians.geoalarm.controllers.MarkerActivityController;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
@@ -26,6 +26,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.util.List;
 
 import thebrazilians.geoalarm.models.DatabaseHandler;
@@ -44,7 +45,6 @@ public class MapsActivity extends AppCompatActivity implements
 
 	private boolean mPermissionDenied = false;
 	private GoogleMap mMap;
-	private Marker mCurrentMarker;
 	private Location mCurrentLocation;
 	private DatabaseHandler db;
 
@@ -63,7 +63,6 @@ public class MapsActivity extends AppCompatActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-
 
 	}
 
@@ -86,15 +85,13 @@ public class MapsActivity extends AppCompatActivity implements
 				LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				View view = inflater.inflate(R.layout.map_marker_window, null);
 
-				mCurrentMarker = getMarkerFromModel(marker);
-
 				TextView textViewTitle = (TextView) view.findViewById(R.id.markerTitle);
-				if (mCurrentMarker.equals(marker)) {
+				if (!isMarkerOnModel(marker)) {
 					Log.i(CLASS_NAME, "Setting Standard Marker Title");
 					textViewTitle.setText("Click to Create a New Activity");
 				} else {
 					Log.i(CLASS_NAME, "Setting Specialized Marker Title");
-					textViewTitle.setText(mCurrentMarker.getTitle());
+					textViewTitle.setText(marker.getTitle());
 				}
 
 				return view;
@@ -223,40 +220,39 @@ public class MapsActivity extends AppCompatActivity implements
 		Log.i(CLASS_NAME, "Click Received. Latitude: " + latLng.latitude
 				+ " | Longitude: " + latLng.longitude);
 
-		mCurrentMarker = mMap.addMarker(new MarkerOptions().position(latLng)
+		Marker marker = mMap.addMarker(new MarkerOptions().position(latLng)
 				.title("Click to Create a New Activity"));
 		mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-		showMarkerDetails();
-	}
 
-	private void showMarkerDetails() {
-		mCurrentMarker.showInfoWindow();
+		marker.showInfoWindow();
 	}
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
 
-		showMarkerDetails();
-
+		marker.showInfoWindow();
 		return false;
 	}
 
 	@Override
 	public void onInfoWindowClick(Marker marker) {
 
-		if(mCurrentMarker.equals(marker)) {
+		MarkerActivity mac = db.checkForLocation(marker.getPosition().latitude,
+				marker.getPosition().longitude);
+		if(mac == null) {
 			Intent intent = new Intent(getApplicationContext(), AddActivity.class);
 			Bundle params = new Bundle();
-			params.putDouble("latitude", mCurrentMarker.getPosition().latitude);
-			params.putDouble("longitude",mCurrentMarker.getPosition().longitude);
+			params.putDouble("latitude", marker.getPosition().latitude);
+			params.putDouble("longitude",marker.getPosition().longitude);
 			intent.putExtras(params);
 			startActivity(intent);
 
 		} else {
 			Intent intent = new Intent(getApplicationContext(), ListActivity.class);
 			Bundle params = new Bundle();
-			params.putDouble("latitude", mCurrentMarker.getPosition().latitude);
-			params.putDouble("longitude",mCurrentMarker.getPosition().longitude);
+			params.putInt("marker_id", mac.getID());
+			params.putDouble("latitude", mac.getLatitude());
+			params.putDouble("longitude", mac.getLongitude());
 			intent.putExtras(params);
 			startActivity(intent);
 		}
@@ -281,29 +277,6 @@ public class MapsActivity extends AppCompatActivity implements
 		isMarkerOnModel = markerActivity != null;
 
 		return isMarkerOnModel;
-	}
-
-	// Get One Mark from Model
-	private Marker getMarkerFromModel(Marker marker) {
-
-		Marker newMarker;
-		MarkerActivity markerActivity = db.checkForLocation(marker.getPosition().latitude
-			, marker.getPosition().longitude);
-
-		if(markerActivity != null) {
-			Log.i(CLASS_NAME, "Getting a Marker");
-
-			marker.remove();
-			newMarker = mMap.addMarker(new MarkerOptions()
-					.position(new LatLng(markerActivity.getLatitude()
-							, markerActivity.getLongitude()))
-					.title(markerActivity.getTitle()));
-		}
-		else {
-			newMarker = marker;
-		}
-
-		return newMarker;
 	}
 
 	private void generateAllMarkers() {

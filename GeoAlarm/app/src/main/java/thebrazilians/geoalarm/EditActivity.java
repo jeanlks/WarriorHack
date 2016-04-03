@@ -1,18 +1,37 @@
 package thebrazilians.geoalarm;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextClock;
+import android.widget.TextView;
 
+import thebrazilians.geoalarm.controllers.MarkerActivityController;
 import thebrazilians.geoalarm.models.Activity;
 import thebrazilians.geoalarm.models.AlarmDate;
+import thebrazilians.geoalarm.models.DatabaseHandler;
+import thebrazilians.geoalarm.models.MarkerActivity;
 
 public class EditActivity extends AppCompatActivity {
+
     Activity activity = new Activity();
     private EditText editTextTitleEdit;
     private EditText editTextDescriptionEdit;
+    private Button btnSave;
+    private EditText placeName;
+    private EditText activityTitle;
+    private EditText description;
+    private TextClock time;
+    private TextView date;
+    private Activity ac;
+    private MarkerActivity mac;
+    private DatabaseHandler db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,28 +39,70 @@ public class EditActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        btnSave = (Button) findViewById(R.id.saveButton);
+        placeName = (EditText) findViewById(R.id.editText);
+        activityTitle = (EditText) findViewById(R.id.editText3);
+        description = (EditText) findViewById(R.id.editText2);
+        time = (TextClock) findViewById(R.id.textClock);
+        date = (TextView) findViewById(R.id.displayDate);
+        db = null;
+
         Intent intent = getIntent();
 
-        Bundle params = intent.getExtras();
+        final Bundle params = intent.getExtras();
 
-        if(params!= null){
-            activity.setName(params.getString("name"));
-            activity.setDescription(params.getString("description"));
-            activity.setAlarmDate(new AlarmDate(params.getInt("day"),
-                    params.getInt("month"),
-                    params.getInt("year"),
-                    params.getInt("hour"),
-                    params.getInt("minute")));
-            activity.setIsRepeatable("sRepeatable");
+        if(params!=null) {
+            db = new DatabaseHandler(this);
+            final double latitude = params.getDouble("latitude");
+            final double longitude = params.getDouble("longitude");
+            btnSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
+                    mac = new MarkerActivity(placeName.getText().toString(), latitude, longitude);
+                    ac = new Activity(activityTitle.getText().toString(),
+                            description.getText().toString(),
+                            new AlarmDate(Integer.parseInt(date.getText().toString().substring(0, 1)),
+                                    Integer.parseInt(date.getText().toString().substring(3, 4)),
+                                    Integer.parseInt(date.getText().toString().substring(6, 7)),
+                                    Integer.parseInt(time.getText().toString().substring(0, 1)),
+                                    Integer.parseInt(time.getText().toString().substring(3, 4))),
+                            "true"
+                    );
+
+                    if (params.containsKey("marker_activity_id")) {
+                        mac.setID(params.getInt("marker_activity_id"));
+                        ac.setIdMarker(params.getInt("marker_activity_id"));
+                        MarkerActivityController.createActivity(mac, ac);
+                        db.updateActivity(ac, mac.getID());
+                    } else {
+                        MarkerActivityController.createMarkerActivity(mac, ac);
+                        db.addMarker(mac);
+                        int maximumIDMarker = db.getMaximumIDMarker();
+                        db.updateActivity(ac, maximumIDMarker);
+                    }
+
+                    Intent acIntent = new Intent(getApplicationContext(), MapsActivity.class);
+                    startActivity(acIntent);
+
+                    editTextTitleEdit = (EditText) findViewById(R.id.editTextTitleEdit);
+                    editTextTitleEdit.setText(activity.getName());
+
+                    editTextDescriptionEdit = (EditText) findViewById(R.id.editTextDescriptionEdit);
+                    editTextDescriptionEdit.setText(activity.getDescription());
+
+                }
+            });
         }
-
-        editTextTitleEdit = (EditText) findViewById(R.id.editTextTitleEdit);
-        editTextTitleEdit.setText(activity.getName());
-
-        editTextDescriptionEdit = (EditText) findViewById(R.id.editTextDescriptionEdit);
-        editTextDescriptionEdit.setText(activity.getDescription());
-
     }
 
+    public void onButtonClicked(View v) {
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getFragmentManager(), "TimePicker");
+    }
+
+    public void showDatePickerDialog(View v) {
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getFragmentManager(), "datePicker");
+    }
 }
