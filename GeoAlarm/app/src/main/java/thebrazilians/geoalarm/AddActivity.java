@@ -1,5 +1,6 @@
 package thebrazilians.geoalarm;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -41,29 +42,38 @@ public class AddActivity extends AppCompatActivity {
         description = (EditText) findViewById(R.id.editText2);
         time = (TextClock) findViewById(R.id.textClock);
         date = (TextView) findViewById(R.id.displayDate);
-        final double latitude = savedInstanceState.getDouble("latitude");
-        final double longitude = savedInstanceState.getDouble("longitude");
 
+        Intent intent = getIntent();
+        Bundle params = intent.getExtras();
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(params!=null) {
+            final double latitude = params.getDouble("latitude");
+            final double longitude = params.getDouble("longitude");
+            btnSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                mac = new MarkerActivity(placeName.getText().toString(), latitude, longitude);
-                ac = new Activity(placeName.getText().toString(), description.getText().toString(), new AlarmDate(Integer.parseInt(date.getText().toString().substring(0, 1)),
-                Integer.parseInt(date.getText().toString().substring(3, 4)),
-                Integer.parseInt(date.getText().toString().substring(6, 7)),
-                Integer.parseInt(time.getText().toString().substring(0, 1)),
-                Integer.parseInt(time.getText().toString().substring(3, 4))), "");
+                    mac = new MarkerActivity(placeName.getText().toString(), latitude, longitude);
+                    ac = new Activity(activityTitle.getText().toString()
+                            , description.getText().toString()
+                            , new AlarmDate(Integer.parseInt(date.getText().toString().substring(0, 1))
+                            , Integer.parseInt(date.getText().toString().substring(3, 4))
+                            , Integer.parseInt(date.getText().toString().substring(6, 7))
+                            , Integer.parseInt(time.getText().toString().substring(0, 1))
+                            , Integer.parseInt(time.getText().toString().substring(3, 4)))
+                            , "true"
+                    );
 
-                if(savedInstanceState.containsKey("marker_activity_id")) {
-                    mac.setID(savedInstanceState.get("marker_activity_id"));
-                    MarkerActivityController.createActivity(mac, ac);
-                } else {
-                    MarkerActivityController.createMarkerActivity(mac, ac);
+                    if(savedInstanceState.containsKey("marker_activity_id")) {
+                        mac.setID(savedInstanceState.getInt("marker_activity_id"));
+                        ac.setIdMarker(savedInstanceState.getInt("marker_activity_id"));
+                        MarkerActivityController.createActivity(mac, ac);
+                    } else {
+                        MarkerActivityController.createMarkerActivity(mac, ac);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public void onButtonClicked(View v){

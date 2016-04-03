@@ -8,7 +8,6 @@ import android.widget.EditText;
 
 import thebrazilians.geoalarm.models.Activity;
 import thebrazilians.geoalarm.models.AlarmDate;
-import thebrazilians.geoalarm.models.MarkerActivity;
 
 public class EditActivity extends AppCompatActivity {
     Activity activity = new Activity();
@@ -33,9 +32,6 @@ public class EditActivity extends AppCompatActivity {
                     params.getInt("year"),
                     params.getInt("hour"),
                     params.getInt("minute")));
-            activity.setMarkerActivity(new MarkerActivity(params.getString("titlePlace"),
-                    params.getDouble("latitude"),
-                    params.getDouble("longitude")));
             activity.setIsRepeatable("sRepeatable");
 
         }
