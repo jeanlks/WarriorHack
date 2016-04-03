@@ -19,7 +19,7 @@ public class Activity {
         this.markerActivity = markerActivity;
         this.isRepeatable = isRepeatable;
     }
-    public Activity(String name, String description, AlarmDate AlarmDate,MarkerActivity markerActivity,String isRepeatable) {
+    public Activity(String name, String description, AlarmDate AlarmDate, String isRepeatable) {
         this.name = name;
         this.description = description;
         this.AlarmDate = AlarmDate;

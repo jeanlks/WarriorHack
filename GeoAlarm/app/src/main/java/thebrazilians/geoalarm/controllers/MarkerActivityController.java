@@ -17,8 +17,7 @@ public abstract class MarkerActivityController {
 		return false;
 	}
 
-	public static boolean createMarkerActivity(String title, LatLng latLng, Activity activity) {
-
+	public static boolean createMarkerActivity(MarkerActivity markerActivity, Activity activity) {
 		// AddActivity
 		return false;
 	}

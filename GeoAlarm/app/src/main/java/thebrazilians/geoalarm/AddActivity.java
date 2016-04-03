@@ -13,8 +13,10 @@ import android.widget.EditText;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import thebrazilians.geoalarm.controllers.MarkerActivityController;
 import thebrazilians.geoalarm.models.Activity;
 import thebrazilians.geoalarm.models.AlarmDate;
+import thebrazilians.geoalarm.models.MarkerActivity;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -24,10 +26,11 @@ public class AddActivity extends AppCompatActivity {
     private EditText description;
     private TextClock time;
     private TextView date;
-    Activity ac;
+    private Activity ac;
+    private MarkerActivity mac;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -38,14 +41,29 @@ public class AddActivity extends AppCompatActivity {
         description = (EditText) findViewById(R.id.editText2);
         time = (TextClock) findViewById(R.id.textClock);
         date = (TextView) findViewById(R.id.displayDate);
+        final double latitude = savedInstanceState.getDouble("latitude");
+        final double longitude = savedInstanceState.getDouble("longitude");
 
-        /*btnSave.setOnClickListener(new View.OnClickListener() {
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ac = new Activity(placeName.getText(), description.getText(),new AlarmDate(Integer.parseInt(date.getText().toString())),));
-            }
-        });*/
 
+                mac = new MarkerActivity(placeName.getText().toString(), latitude, longitude);
+                ac = new Activity(placeName.getText().toString(), description.getText().toString(), new AlarmDate(Integer.parseInt(date.getText().toString().substring(0, 1)),
+                Integer.parseInt(date.getText().toString().substring(3, 4)),
+                Integer.parseInt(date.getText().toString().substring(6, 7)),
+                Integer.parseInt(time.getText().toString().substring(0, 1)),
+                Integer.parseInt(time.getText().toString().substring(3, 4))), "");
+
+                if(savedInstanceState.containsKey("marker_activity_id")) {
+                    mac.setID(savedInstanceState.get("marker_activity_id"));
+                    MarkerActivityController.createActivity(mac, ac);
+                } else {
+                    MarkerActivityController.createMarkerActivity(mac, ac);
+                }
+            }
+        });
     }
 
     public void onButtonClicked(View v){
