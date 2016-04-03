@@ -236,9 +236,8 @@ public class MapsActivity extends AppCompatActivity implements
 	@Override
 	public void onInfoWindowClose(Marker marker) {
 
-		Toast.makeText(this, "Close Window", Toast.LENGTH_SHORT).show();
-
 		if(isMarkerOnModel(marker) == false) {
+			Toast.makeText(this, "Marker Removed", Toast.LENGTH_SHORT).show();
 			marker.remove();
 		}
 	}
