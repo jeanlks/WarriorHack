@@ -79,9 +79,11 @@ public class MapsActivity extends AppCompatActivity implements
 				mCurrentMarker = getMarkerFromModel(marker);
 
 				TextView textViewTitle = (TextView) view.findViewById(R.id.markerTitle);
-				if (mCurrentMarker == marker) {
+				if (mCurrentMarker.equals(marker)) {
+					Log.i(CLASS_NAME, "Setting Standard Marker Title");
 					textViewTitle.setText("Click to Create a New Activity");
 				} else {
+					Log.i(CLASS_NAME, "Setting Specialized Marker Title");
 					textViewTitle.setText(mCurrentMarker.getTitle());
 				}
 
@@ -232,9 +234,7 @@ public class MapsActivity extends AppCompatActivity implements
 	@Override
 	public void onInfoWindowClick(Marker marker) {
 
-		Toast.makeText(this, "Show Activity Details", Toast.LENGTH_SHORT).show();
-
-		if(mCurrentMarker == marker) {
+		if(mCurrentMarker.equals(marker)) {
 			Intent intent = new Intent(getApplicationContext(), AddActivity.class);
 			Bundle params = new Bundle();
 			params.putDouble("latitude", mCurrentMarker.getPosition().latitude);
