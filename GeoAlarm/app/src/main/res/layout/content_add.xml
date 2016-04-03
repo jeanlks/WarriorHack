@@ -49,20 +49,22 @@
         android:minLines="1"
         />
 
+    <TextClock
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:id="@+id/textClock"
+        android:onClick="onButtonClicked"
+        android:layout_below="@+id/textView4"
+        android:layout_centerHorizontal="true" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date"
-        android:id="@+id/textView3"
+        android:textSize="20dp"
+        android:text="Time"
+        android:id="@+id/textView4"
         android:layout_below="@+id/editText2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="35dp"
-        android:textSize="20dp"/>
-
-    <TimePicker
-        android:id="@+id/dpResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView3"/>
+        android:layout_alignStart="@+id/textView" />
 
 </RelativeLayout>
