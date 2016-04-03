@@ -58,14 +58,14 @@ public class AddActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
                     mac = new MarkerActivity(placeName.getText().toString(), latitude, longitude);
-                    ac = new Activity(activityTitle.getText().toString()
-                            , description.getText().toString()
-                            , new AlarmDate(Integer.parseInt(date.getText().toString().substring(0, 1))
-                            , Integer.parseInt(date.getText().toString().substring(3, 4))
-                            , Integer.parseInt(date.getText().toString().substring(6, 7))
-                            , Integer.parseInt(time.getText().toString().substring(0, 1))
-                            , Integer.parseInt(time.getText().toString().substring(3, 4)))
-                            , "true"
+                    ac = new Activity(activityTitle.getText().toString(),
+                            description.getText().toString(),
+                            new AlarmDate(Integer.parseInt(date.getText().toString().substring(0, 1)),
+                                    Integer.parseInt(date.getText().toString().substring(3, 4)),
+                                    Integer.parseInt(date.getText().toString().substring(6, 7)),
+                                    Integer.parseInt(time.getText().toString().substring(0, 1)),
+                                    Integer.parseInt(time.getText().toString().substring(3, 4))),
+                            "true"
                     );
 
                     if(params.containsKey("marker_activity_id")) {
