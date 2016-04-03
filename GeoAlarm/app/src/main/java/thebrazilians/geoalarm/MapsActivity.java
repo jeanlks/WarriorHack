@@ -17,7 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import thebrazilians.geoalarm.controllers.MarkerActivityController;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
@@ -29,6 +29,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
+import thebrazilians.geoalarm.controllers.MarkerActivityController;
+import thebrazilians.geoalarm.models.Activity;
+import thebrazilians.geoalarm.models.AlarmDate;
+import thebrazilians.geoalarm.models.DatabaseHandler;
 import thebrazilians.geoalarm.models.MarkerActivity;
 
 public class MapsActivity extends AppCompatActivity implements
@@ -55,6 +59,9 @@ public class MapsActivity extends AppCompatActivity implements
 		SupportMapFragment mapFragment =
 				(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
+
+        
+
 	}
 
 	@Override

@@ -152,20 +152,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public MarkerActivity checkForLocation(double latitude, double longitude) {
         MarkerActivity markerActivity = new MarkerActivity();
-        String selectQuery = "SELECT  * FROM" + TABLE_MARKER + " WHERE " + KEY_LONGITUDE + " = " + latitude + " AND " + KEY_LATITUDE + " = " + longitude;
+        String selectQuery = "SELECT  * FROM " + TABLE_MARKER + " WHERE " + KEY_LATITUDE+ " = " + latitude + " AND " + KEY_LONGITUDE + " = " + longitude;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
 
-        if (cursor.moveToFirst()) {
+
+    if (cursor.moveToFirst()) {
             markerActivity.setID(cursor.getInt(0));
             markerActivity.setTitle(cursor.getString(1));
             markerActivity.setLatitude(cursor.getDouble(2));
             markerActivity.setLongitude(cursor.getDouble(3));
-        }
-
         return markerActivity;
+        }else{
+        return null;
+    }
+
+
+
     }
 
     public List<Activity> getAllActivitiesByID(int idMarker) {
