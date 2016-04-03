@@ -15,24 +15,30 @@ import java.util.List;
 public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "activitiesManager";
+    //Table activity
     private static final String TABLE_ACTIVITY = "activity";
 
-    private static final String KEY_ID = "id";
+    private static final String KEY_ID_ACTIVITY = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_DESCRIPTION = "description";
-    private static final String KEY_MONTH ="month";
-    private static final String KEY_DAY ="day";
-    private static final String KEY_YEAR ="year";
-    private static final String KEY_HOUR ="hour";
-    private static final String KEY_MINUTES ="minutes";
+    private static final String KEY_MONTH = "month";
+    private static final String KEY_DAY = "day";
+    private static final String KEY_YEAR = "year";
+    private static final String KEY_HOUR = "hour";
+    private static final String KEY_MINUTES = "minutes";
+
+    private static final String KEY_isRepeatale = "isRepeatable";
+
+    // Table Marker
+    private static final String TABLE_MARKER = "marker";
+    private static final String KEY_ID_MARKER = "markerID";
     private static final String KEY_TITLE_PLACE = "titlePlace";
     private static final String KEY_LATITUDE = "latitude";
     private static final String KEY_LONGITUDE = "longitude";
-    private static final String KEY_isRepeatale = "isRepeatable";
 
 
     public DatabaseHandler(Context context) {
-        super(context,DATABASE_NAME,null, DATABASE_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
 
@@ -48,17 +54,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        String CREATE_MARKER_TABLE = "CREATE TABLE " + TABLE_MARKER + "("
+                + KEY_ID_MARKER + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_TITLE_PLACE + " TEXT,"
+                + KEY_LATITUDE + " TEXT," + KEY_LONGITUDE + " TEXT " + ");";
+
+
         String CREATE_ACTIVITY_TABLE = "CREATE TABLE " + TABLE_ACTIVITY + "("
-                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT,"
-                + KEY_DESCRIPTION + " TEXT, " +KEY_MONTH+" INTEGER,"+KEY_DAY+" INTEGER,"+KEY_YEAR+" INTEGER, "+KEY_HOUR+" INTEGER,"
-                +KEY_MINUTES+" INTEGER, "+KEY_TITLE_PLACE+" TEXT, "+KEY_LATITUDE+" TEXT,"+KEY_LONGITUDE+" TEXT," +KEY_isRepeatale+ " TEXT" +");";
+                + KEY_ID_ACTIVITY + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT,"
+                + KEY_DESCRIPTION + " TEXT, " + KEY_MONTH + " INTEGER," + KEY_DAY + " INTEGER," + KEY_YEAR + " INTEGER, " + KEY_HOUR + " INTEGER,"
+                + KEY_MINUTES + " INTEGER, " + KEY_isRepeatale + " TEXT, "
+                +KEY_ID_MARKER+" INTEGER,"
+                +" FOREIGN KEY (" + KEY_ID_MARKER + ") REFERENCES " + TABLE_MARKER + "( " + KEY_ID_MARKER + " ));";
+        db.execSQL(CREATE_MARKER_TABLE);
         db.execSQL(CREATE_ACTIVITY_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-     db.execSQL("DROP TABLE IF EXISTS "+TABLE_ACTIVITY);
-     onCreate(db);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MARKER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTIVITY);
+        onCreate(db);
     }
 
 
@@ -67,7 +82,57 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         super.onDowngrade(db, oldVersion, newVersion);
     }
 
-    public void addActivity(Activity activity){
+
+    public void addMarker(MarkerActivity marker) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_TITLE_PLACE, marker.getTitle());
+        values.put(KEY_LATITUDE, marker.getLatitude());
+        values.put(KEY_LONGITUDE, marker.getLongitude());
+        db.insert(TABLE_MARKER, null, values);
+        db.close();
+    }
+
+    public int getMaximumIDMarker(){
+       int maximumID = 0;
+        String selectQuery =  " SELECT MAX ( "+KEY_ID_MARKER+" ) FROM "+TABLE_MARKER;
+
+       SQLiteDatabase db = this.getWritableDatabase();
+        Cursor mCursor = db.rawQuery(selectQuery, null);
+
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+             maximumID = mCursor.getInt(0);}
+
+        return maximumID;
+    }
+    public List<MarkerActivity> getAllMarkers() {
+        List<MarkerActivity> markerList = new ArrayList<MarkerActivity>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_MARKER;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                MarkerActivity markerActivity = new MarkerActivity();
+                markerActivity.setID(cursor.getInt(0));
+                markerActivity.setTitle(cursor.getString(1));
+                markerActivity.setLatitude(cursor.getDouble(2));
+                markerActivity.setLongitude(cursor.getDouble(3));
+                // Adding contact to list
+                markerList.add(markerActivity);
+            } while (cursor.moveToNext());
+        }
+
+        // return contact list
+        return markerList;
+    }
+
+    public void addActivity(Activity activity,int markerID) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         ContentValues values = new ContentValues();
@@ -76,49 +141,40 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_MONTH, activity.getAlarmDate().getMonth());
         values.put(KEY_DAY, activity.getAlarmDate().getDay());
         values.put(KEY_YEAR, activity.getAlarmDate().getYear());
-        values.put(KEY_HOUR,activity.getAlarmDate().getHour());
-        values.put(KEY_MINUTES,activity.getAlarmDate().getMinutes());
-        values.put(KEY_TITLE_PLACE,activity.getMarkerActivity().getTitle());
-        values.put(KEY_LATITUDE,activity.getMarkerActivity().getLatitude());
-        values.put(KEY_LONGITUDE,activity.getMarkerActivity().getLongitude());
-        values.put(KEY_isRepeatale,activity.getIsRepeatable());
-
+        values.put(KEY_HOUR, activity.getAlarmDate().getHour());
+        values.put(KEY_MINUTES, activity.getAlarmDate().getMinutes());
+        values.put(KEY_isRepeatale, activity.getIsRepeatable());
+        values.put(KEY_ID_MARKER,markerID);
         db.insert(TABLE_ACTIVITY, null, values);
         db.close();
     }
 
-    public Activity getActivity(int id){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_ACTIVITY, new String[]{KEY_ID, KEY_NAME, KEY_DESCRIPTION, KEY_MONTH, KEY_DAY, KEY_YEAR,
-                        KEY_HOUR, KEY_MINUTES, KEY_LATITUDE, KEY_LONGITUDE}, KEY_ID + "=?", new String[]{String.valueOf(id)},
-                null, null, null, null);
 
-        if(cursor != null)
-            cursor.moveToFirst();
-
-        Activity activity = new Activity(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2),
-                                                       new AlarmDate(Integer.parseInt(cursor.getString(3)),
-                                                       Integer.parseInt(cursor.getString(4)),
-                                                       Integer.parseInt(cursor.getString(5)),
-                                                       Integer.parseInt(cursor.getString(6)),
-                                                       Integer.parseInt(cursor.getString(7))),
-                                                       new MarkerActivity(cursor.getString(8),
-                                                       Double.parseDouble(cursor.getString(9)),
-                                                       Double.parseDouble(cursor.getString(10))),
-                                                       cursor.getString(11));
-
-        return activity;
-    }
-
-
-    public List<Activity> getAllActivities(){
-        List<Activity> activityList = new ArrayList<Activity>();
-
-        String selectQuery = "SELECT  * FROM " + TABLE_ACTIVITY;
+    public MarkerActivity checkForLocation(double latitude, double longitude) {
+        MarkerActivity markerActivity = new MarkerActivity();
+        String selectQuery = "SELECT  * FROM" + TABLE_MARKER + " WHERE " + KEY_LONGITUDE + " = " + latitude + " AND " + KEY_LATITUDE + " = " + longitude;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
+
+        if (cursor.moveToFirst()) {
+            markerActivity.setID(cursor.getInt(0));
+            markerActivity.setTitle(cursor.getString(1));
+            markerActivity.setLatitude(cursor.getDouble(2));
+            markerActivity.setLongitude(cursor.getDouble(3));
+        }
+
+        return markerActivity;
+    }
+
+    public List<Activity> getAllActivitiesByID(int idMarker) {
+        List<Activity> activityList = new ArrayList<Activity>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_ACTIVITY + " WHERE ID = " + idMarker;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
 
 
         if (cursor.moveToFirst()) {
@@ -132,10 +188,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         Integer.parseInt(cursor.getString(5)),
                         Integer.parseInt(cursor.getString(6)),
                         Integer.parseInt(cursor.getString(7))));
-                activity.setMarkerActivity(new MarkerActivity(cursor.getString(8),
-                        Double.parseDouble(cursor.getString(9)),
-                        Double.parseDouble(cursor.getString(10))));
-                activity.setIsRepeatable(cursor.getString(11));
+                activity.setIsRepeatable(cursor.getString(8));
+                activity.setIdMarker(cursor.getInt(9));
                 activityList.add(activity);
 
             } while (cursor.moveToNext());
@@ -145,23 +199,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public int getActivityCount(){
-        String countQuery = "SELECT  * FROM " + TABLE_ACTIVITY;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-        cursor.close();
+//    public void deleteActivity(Activity activity) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        db.delete(TABLE_ACTIVITY, KEY_ID + " = ?",
+//                new String[]{String.valueOf(activity.getID())});
+//        db.close();
+//    }
 
-        return cursor.getCount();
-    }
-
-    public void deleteActivity(Activity activity) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_ACTIVITY, KEY_ID + " = ?",
-                new String[] { String.valueOf(activity.getID()) });
-        db.close();
-    }
-
-    public int updateActivity(Activity activity){
+    public int updateActivity(Activity activity) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -170,16 +215,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_MONTH, activity.getAlarmDate().getMonth());
         values.put(KEY_DAY, activity.getAlarmDate().getDay());
         values.put(KEY_YEAR, activity.getAlarmDate().getYear());
-        values.put(KEY_HOUR,activity.getAlarmDate().getHour());
-        values.put(KEY_MINUTES,activity.getAlarmDate().getMinutes());
-        values.put(KEY_TITLE_PLACE, activity.getMarkerActivity().getTitle());
-        values.put(KEY_LATITUDE,activity.getMarkerActivity().getLatitude());
-        values.put(KEY_LONGITUDE,activity.getMarkerActivity().getLongitude());
-        values.put(KEY_isRepeatale,activity.getIsRepeatable());
+        values.put(KEY_HOUR, activity.getAlarmDate().getHour());
+        values.put(KEY_MINUTES, activity.getAlarmDate().getMinutes());
+        values.put(KEY_isRepeatale, activity.getIsRepeatable());
 
-        return db.update(TABLE_ACTIVITY, values, KEY_ID + " = ?", new String[]{String.valueOf(activity.getID())});
+        return db.update(TABLE_ACTIVITY, values, KEY_ID_ACTIVITY+ " = ?", new String[]{String.valueOf(activity.getID())});
     }
-
 
 
 }

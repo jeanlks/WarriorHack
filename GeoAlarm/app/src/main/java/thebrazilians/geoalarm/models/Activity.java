@@ -9,34 +9,33 @@ public class Activity {
     private String description;
     private AlarmDate AlarmDate;
     private String isRepeatable;
-    private MarkerActivity markerActivity;
-
-    public Activity(int ID,String name, String description, AlarmDate AlarmDate,MarkerActivity markerActivity, String isRepeatable) {
+    private int idMarker;
+    public Activity(int ID,String name, String description, AlarmDate AlarmDate, String isRepeatable, int idMarker) {
         this.ID = ID;
         this.name = name;
         this.description = description;
         this.AlarmDate = AlarmDate;
-        this.markerActivity = markerActivity;
         this.isRepeatable = isRepeatable;
+        this.idMarker = idMarker;
     }
-    public Activity(String name, String description, AlarmDate AlarmDate,MarkerActivity markerActivity,String isRepeatable) {
+    public Activity(String name, String description, AlarmDate AlarmDate,String isRepeatable, int idMarker) {
         this.name = name;
         this.description = description;
         this.AlarmDate = AlarmDate;
-       this.markerActivity = markerActivity;
         this.isRepeatable = isRepeatable;
+        this.idMarker = idMarker;
     }
 
     public Activity(){
 
     }
 
-    public MarkerActivity getMarkerActivity() {
-        return markerActivity;
+    public int getIdMarker() {
+        return idMarker;
     }
 
-    public void setMarkerActivity(MarkerActivity markerActivity) {
-        this.markerActivity = markerActivity;
+    public void setIdMarker(int idMarker) {
+        this.idMarker = idMarker;
     }
 
     public String getIsRepeatable() {

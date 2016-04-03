@@ -1,5 +1,22 @@
 package thebrazilians.geoalarm;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
@@ -8,25 +25,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Camera;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import java.util.List;
+
+import thebrazilians.geoalarm.models.Activity;
+import thebrazilians.geoalarm.models.AlarmDate;
+import thebrazilians.geoalarm.models.DatabaseHandler;
+import thebrazilians.geoalarm.models.MarkerActivity;
 
 public class MapsActivity extends AppCompatActivity implements
 		OnMyLocationButtonClickListener,
@@ -52,6 +57,25 @@ public class MapsActivity extends AppCompatActivity implements
 		SupportMapFragment mapFragment =
 				(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
+//TESTES
+		DatabaseHandler db = new DatabaseHandler(this);
+		MarkerActivity m = new MarkerActivity("jean",34.0,1.0);
+        db.addMarker(m);
+        int maximumID = db.getMaximumIDMarker();
+		Activity ac = new Activity("ir pra aula","zoolner",new AlarmDate(10,03,2010,10,00),"true",maximumID);
+
+        db.addActivity(ac,maximumID);
+        Log.v("Reading: ", "Reading all contacts..");
+        Log.v("MaximumID",maximumID+" ");
+       List<Activity> activities = db.getAllActivitiesByID(maximumID);
+
+       for (Activity cn : activities) {
+            String log = "Id: "+cn.getID()+" ,Name: " + cn.getName() + " ,idMarker: " + cn.getIdMarker()+" description: "+cn.getDescription();
+            // Writing Contacts to log
+            Log.v("Name: ", log);
+        }
+
+        /////////FIM TESTES
 	}
 
 	@Override

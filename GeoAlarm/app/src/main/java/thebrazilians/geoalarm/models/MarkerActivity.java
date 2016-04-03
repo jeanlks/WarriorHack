@@ -4,6 +4,7 @@ package thebrazilians.geoalarm.models;
  * Created by Jean on 4/2/16.
  */
 public class MarkerActivity {
+    private int ID;
     private String title;
     private Double latitude;
     private Double longitude;
@@ -14,8 +15,27 @@ public class MarkerActivity {
         this.longitude = longitude;
     }
 
+    public MarkerActivity(int ID,String title, Double latitude, Double longitude) {
+        this.ID = ID;
+        this.title = title;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+    public MarkerActivity(){
+
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
     public String getTitle() {
         return title;
+
     }
 
     public void setTitle(String title) {
