@@ -37,6 +37,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+        <activity
+            android:name=".ListActivity"
+            android:label="@string/title_activity_list"
+            android:theme="@style/AppTheme.NoActionBar">
+
+
+        </activity>
+        <activity
+            android:name=".EditActivity"
+            android:label="@string/title_activity_edit"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddActivity"
+            android:label="@string/title_activity_add"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+
+            </application>
 
 </manifest>
