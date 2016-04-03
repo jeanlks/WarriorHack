@@ -9,7 +9,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Camera;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -21,13 +26,18 @@ import android.widget.Toast;
 public class MapsActivity extends AppCompatActivity implements
 		OnMyLocationButtonClickListener,
 		OnMapReadyCallback,
-		ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
+		ActivityCompat.OnRequestPermissionsResultCallback,
+		GoogleMap.OnMarkerClickListener,
+		GoogleMap.OnMapLongClickListener,
+		GoogleMap.OnInfoWindowClickListener {
 
 	private static final String CLASS_NAME = MapsActivity.class.getSimpleName();
 	private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
 	private boolean mPermissionDenied = false;
 	private GoogleMap mMap;
+	private Marker mCurrentMarker;
+	private Location mCurrentLocation;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +53,43 @@ public class MapsActivity extends AppCompatActivity implements
 	public void onMapReady(GoogleMap map) {
 		mMap = map;
 
-		mMap.setOnMyLocationButtonClickListener(this);
+		getAllMarkers();
+		enableClickListeners();
 		enableMyLocation();
-		enableMapClickListener();
-		enableMarkerClickListener();
+	}
+
+	private void enableClickListeners() {
+		mMap.setOnMyLocationButtonClickListener(this);
+		mMap.setOnMapLongClickListener(this);
+		mMap.setOnMarkerClickListener(this);
+		mMap.setOnInfoWindowClickListener(this);
 	}
 
 	private void enableMyLocation() {
+
+		LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		LocationListener locationListener = new LocationListener() {
+			@Override
+			public void onLocationChanged(Location location) {
+				updateCurrentLocation(location);
+			}
+
+			@Override
+			public void onStatusChanged(String provider, int status, Bundle extras) {
+
+			}
+
+			@Override
+			public void onProviderEnabled(String provider) {
+
+			}
+
+			@Override
+			public void onProviderDisabled(String provider) {
+
+			}
+		};
+
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
 				!= PackageManager.PERMISSION_GRANTED) {
 
@@ -58,7 +98,34 @@ public class MapsActivity extends AppCompatActivity implements
 		} else if (mMap != null) {
 
 			mMap.setMyLocationEnabled(true);
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+					0,
+					0,
+					locationListener);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+					0,
+					0,
+					locationListener);
 		}
+	}
+
+	private void updateCurrentLocation(Location location) {
+
+		if(mCurrentLocation == null) {
+			mCurrentLocation = location;
+			centerByLocation();
+		}
+		mCurrentLocation = location;
+	}
+
+	private void centerByLocation() {
+
+		double latitude = mCurrentLocation.getLatitude();
+		double longitude = mCurrentLocation.getLongitude();
+		LatLng latLng = new LatLng(latitude, longitude);
+
+		mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+		mMap.moveCamera(CameraUpdateFactory.zoomTo(17));
 	}
 
 	@Override
@@ -100,36 +167,49 @@ public class MapsActivity extends AppCompatActivity implements
 				.newInstance(true).show(getSupportFragmentManager(), "Permission Denied");
 	}
 
-	private void enableMapClickListener() {
-
-		mMap.setOnMapClickListener(this);
-	}
-
 	@Override
-	public void onMapClick(LatLng latLng) {
+	public void onMapLongClick(LatLng latLng) {
 
 		Log.i(CLASS_NAME, "Click Received. Latitude: " + latLng.latitude
 				+ " | Longitude: " + latLng.longitude);
 
-		Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title("New Marker"));
+		mCurrentMarker = mMap.addMarker(new MarkerOptions().position(latLng)
+				.title("Click to Create a New Activity"));
 		mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-		marker.showInfoWindow();
-		createNewActivity(marker);
+		showMarkerDetails();
 	}
 
-	private void enableMarkerClickListener() {
-
-		mMap.setOnMarkerClickListener(this);
+	private void showMarkerDetails() {
+		mCurrentMarker.showInfoWindow();
 	}
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
 
+		mCurrentMarker = getMarkerFromModel(marker);
+		showMarkerDetails();
+
 		return false;
 	}
 
-	private void createNewActivity(Marker marker) {
+	@Override
+	public void onInfoWindowClick(Marker marker) {
 
+		Toast.makeText(this, "Show Activity Details", Toast.LENGTH_SHORT).show();
 
+		mCurrentMarker = getMarkerFromModel(marker);
+	}
+
+	// Get One Mark from Model
+	private Marker getMarkerFromModel(Marker marker) {
+
+		Log.i(CLASS_NAME, "Getting a Marker");
+
+		return marker;
+	}
+
+	// Get All Markers from Model
+	private void getAllMarkers() {
+		Log.i(CLASS_NAME, "Getting Markers");
 	}
 }
