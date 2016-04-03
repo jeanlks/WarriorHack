@@ -126,6 +126,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 // Adding contact to list
                 markerList.add(markerActivity);
             } while (cursor.moveToNext());
+        }else{
+            return null;
         }
 
         // return contact list
