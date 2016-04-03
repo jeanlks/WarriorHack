@@ -1,12 +1,16 @@
 package thebrazilians.geoalarm.models;
 
+import java.util.ArrayList;
+
 /**
  * Created by Jean on 4/2/16.
  */
 public class MarkerActivity {
+    private int ID;
     private String title;
     private Double latitude;
     private Double longitude;
+    private ArrayList<Activity> activities;
 
     public MarkerActivity(String title, Double latitude, Double longitude) {
         this.title = title;

@@ -10,9 +10,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,13 +19,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+
+import thebrazilians.geoalarm.controllers.MarkerActivityController;
+import thebrazilians.geoalarm.models.MarkerActivity;
 
 public class MapsActivity extends AppCompatActivity implements
 		OnMyLocationButtonClickListener,
@@ -58,7 +61,7 @@ public class MapsActivity extends AppCompatActivity implements
 	public void onMapReady(GoogleMap map) {
 		mMap = map;
 
-		getAllMarkers();
+		generateAllMarkers();
 		enableClickListeners();
 		enableMyLocation();
 		setInfoWindowAdapter();
@@ -75,9 +78,11 @@ public class MapsActivity extends AppCompatActivity implements
 
 				mCurrentMarker = getMarkerFromModel(marker);
 
-				if (marker != null) {
-					TextView textViewTitle = (TextView) view.findViewById(R.id.markerTitle);
+				TextView textViewTitle = (TextView) view.findViewById(R.id.markerTitle);
+				if (mCurrentMarker == marker) {
 					textViewTitle.setText("Click to Create a New Activity");
+				} else {
+					textViewTitle.setText(mCurrentMarker.getTitle());
 				}
 
 				return view;
@@ -219,7 +224,6 @@ public class MapsActivity extends AppCompatActivity implements
 	@Override
 	public boolean onMarkerClick(Marker marker) {
 
-		mCurrentMarker = getMarkerFromModel(marker);
 		showMarkerDetails();
 
 		return false;
@@ -230,7 +234,22 @@ public class MapsActivity extends AppCompatActivity implements
 
 		Toast.makeText(this, "Show Activity Details", Toast.LENGTH_SHORT).show();
 
-		mCurrentMarker = getMarkerFromModel(marker);
+		if(mCurrentMarker == marker) {
+			Intent intent = new Intent(getApplicationContext(), AddActivity.class);
+			Bundle params = new Bundle();
+			params.putDouble("latitude", mCurrentMarker.getPosition().latitude);
+			params.putDouble("longitude",mCurrentMarker.getPosition().longitude);
+			intent.putExtras(params);
+			startActivity(intent);
+
+		} else {
+			Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+			Bundle params = new Bundle();
+			params.putDouble("latitude", mCurrentMarker.getPosition().latitude);
+			params.putDouble("longitude",mCurrentMarker.getPosition().longitude);
+			intent.putExtras(params);
+			startActivity(intent);
+		}
 	}
 
 	@Override
@@ -243,19 +262,56 @@ public class MapsActivity extends AppCompatActivity implements
 	}
 
 	private boolean isMarkerOnModel(Marker marker) {
-		return false;
+
+		boolean isMarkerOnModel = false;
+		MarkerActivity markerActivity = MarkerActivityController
+				.getMarkerActivityInLatLng(marker.getPosition());
+
+		if(markerActivity != null) {
+			isMarkerOnModel = true;
+		} else {
+			isMarkerOnModel = false;
+		}
+
+		return isMarkerOnModel;
 	}
 
 	// Get One Mark from Model
 	private Marker getMarkerFromModel(Marker marker) {
 
-		Log.i(CLASS_NAME, "Getting a Marker");
+		Marker newMarker;
+		MarkerActivity markerActivity = MarkerActivityController
+				.getMarkerActivityInLatLng(marker.getPosition());
 
-		return marker;
+		if(markerActivity != null) {
+			Log.i(CLASS_NAME, "Getting a Marker");
+
+			marker.remove();
+			newMarker = mMap.addMarker(new MarkerOptions()
+					.position(new LatLng(markerActivity.getLatitude()
+							, markerActivity.getLongitude()))
+					.title(markerActivity.getTitle()));
+		}
+		else {
+			newMarker = marker;
+		}
+
+		return newMarker;
 	}
 
-	// Get All Markers from Model
-	private void getAllMarkers() {
-		Log.i(CLASS_NAME, "Getting Markers");
+	private void generateAllMarkers() {
+		ArrayList<MarkerActivity> markerActivities = MarkerActivityController
+				.getAllMarkersActivities();
+
+		if(markerActivities != null) {
+			Log.i(CLASS_NAME, "Generating Markers");
+			for(MarkerActivity markerActivity: markerActivities) {
+
+				mMap.addMarker(new MarkerOptions()
+						.position(new LatLng(markerActivity.getLatitude()
+								, markerActivity.getLongitude()))
+						.title(markerActivity.getTitle()));
+			}
+		}
 	}
 }
