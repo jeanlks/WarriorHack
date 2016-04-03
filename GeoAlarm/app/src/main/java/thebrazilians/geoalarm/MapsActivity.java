@@ -12,6 +12,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Camera;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,8 +20,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MapsActivity extends AppCompatActivity implements
@@ -29,7 +34,7 @@ public class MapsActivity extends AppCompatActivity implements
 		ActivityCompat.OnRequestPermissionsResultCallback,
 		GoogleMap.OnMarkerClickListener,
 		GoogleMap.OnMapLongClickListener,
-		GoogleMap.OnInfoWindowClickListener {
+		GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener {
 
 	private static final String CLASS_NAME = MapsActivity.class.getSimpleName();
 	private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -56,6 +61,33 @@ public class MapsActivity extends AppCompatActivity implements
 		getAllMarkers();
 		enableClickListeners();
 		enableMyLocation();
+		setInfoWindowAdapter();
+	}
+
+	private void setInfoWindowAdapter() {
+
+		mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+			@Override
+			public View getInfoWindow(Marker marker) {
+
+				LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				View view = inflater.inflate(R.layout.map_marker_window, null);
+
+				mCurrentMarker = getMarkerFromModel(marker);
+
+				if (marker != null) {
+					TextView textViewTitle = (TextView) view.findViewById(R.id.markerTitle);
+					textViewTitle.setText("Click to Create a New Activity");
+				}
+
+				return view;
+			}
+
+			@Override
+			public View getInfoContents(Marker marker) {
+				return null;
+			}
+		});
 	}
 
 	private void enableClickListeners() {
@@ -63,6 +95,7 @@ public class MapsActivity extends AppCompatActivity implements
 		mMap.setOnMapLongClickListener(this);
 		mMap.setOnMarkerClickListener(this);
 		mMap.setOnInfoWindowClickListener(this);
+		mMap.setOnInfoWindowCloseListener(this);
 	}
 
 	private void enableMyLocation() {
@@ -198,6 +231,20 @@ public class MapsActivity extends AppCompatActivity implements
 		Toast.makeText(this, "Show Activity Details", Toast.LENGTH_SHORT).show();
 
 		mCurrentMarker = getMarkerFromModel(marker);
+	}
+
+	@Override
+	public void onInfoWindowClose(Marker marker) {
+
+		Toast.makeText(this, "Close Window", Toast.LENGTH_SHORT).show();
+
+		if(isMarkerOnModel(marker) == false) {
+			marker.remove();
+		}
+	}
+
+	private boolean isMarkerOnModel(Marker marker) {
+		return false;
 	}
 
 	// Get One Mark from Model
