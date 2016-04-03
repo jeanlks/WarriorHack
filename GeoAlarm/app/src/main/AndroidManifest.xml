@@ -30,21 +30,17 @@
 
         <activity
             android:name=".MapsActivity"
-<<<<<<< HEAD
-
             android:label="@string/title_activity_maps">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ListActivity"
             android:label="@string/title_activity_list"
-
-=======
-            android:label="@string/title_activity_maps"></activity>
-        <activity
-            android:name=".ListActivity"
-            android:label="@string/title_activity_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EditActivity"
             android:label="@string/title_activity_edit"
@@ -52,24 +48,7 @@
         <activity
             android:name=".AddActivity"
             android:label="@string/title_activity_add"
->>>>>>> origin/crud
-            android:theme="@style/AppTheme.NoActionBar">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
-<<<<<<< HEAD
-        <activity
-            android:name=".EditActivity"
-            android:label="@string/title_activity_edit"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-=======
->>>>>>> origin/crud
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
