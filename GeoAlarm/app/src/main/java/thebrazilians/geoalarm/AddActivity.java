@@ -17,6 +17,7 @@ import android.widget.TextView;
 import thebrazilians.geoalarm.controllers.MarkerActivityController;
 import thebrazilians.geoalarm.models.Activity;
 import thebrazilians.geoalarm.models.AlarmDate;
+import thebrazilians.geoalarm.models.DatabaseHandler;
 import thebrazilians.geoalarm.models.MarkerActivity;
 
 public class AddActivity extends AppCompatActivity {
@@ -29,6 +30,7 @@ public class AddActivity extends AppCompatActivity {
     private TextView date;
     private Activity ac;
     private MarkerActivity mac;
+    private DatabaseHandler db;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -42,11 +44,13 @@ public class AddActivity extends AppCompatActivity {
         description = (EditText) findViewById(R.id.editText2);
         time = (TextClock) findViewById(R.id.textClock);
         date = (TextView) findViewById(R.id.displayDate);
+        db = null;
 
-        Intent intent = getIntent();
-        Bundle params = intent.getExtras();
+        final Intent intent = getIntent();
+        final Bundle params = intent.getExtras();
 
         if(params!=null) {
+            db = new DatabaseHandler(this);
             final double latitude = params.getDouble("latitude");
             final double longitude = params.getDouble("longitude");
             btnSave.setOnClickListener(new View.OnClickListener() {
@@ -64,13 +68,21 @@ public class AddActivity extends AppCompatActivity {
                             , "true"
                     );
 
-                    if(savedInstanceState.containsKey("marker_activity_id")) {
-                        mac.setID(savedInstanceState.getInt("marker_activity_id"));
-                        ac.setIdMarker(savedInstanceState.getInt("marker_activity_id"));
+                    if(params.containsKey("marker_activity_id")) {
+                        mac.setID(params.getInt("marker_activity_id"));
+                        ac.setIdMarker(params.getInt("marker_activity_id"));
                         MarkerActivityController.createActivity(mac, ac);
+                        db.addMarker(mac);
+                        db.addActivity(ac,mac.getID());
                     } else {
                         MarkerActivityController.createMarkerActivity(mac, ac);
+                        db.addMarker(mac);
+                        int maximumIDMarker = db.getMaximumIDMarker();
+                        db.addActivity(ac,maximumIDMarker);
                     }
+
+                    Intent acIntent = new Intent(getApplicationContext(), MapsActivity.class);
+                    startActivity(acIntent);
                 }
             });
         }

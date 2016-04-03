@@ -26,9 +26,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import java.util.List;
 
-import java.util.ArrayList;
-
+import thebrazilians.geoalarm.models.DatabaseHandler;
 import thebrazilians.geoalarm.models.MarkerActivity;
 
 public class MapsActivity extends AppCompatActivity implements
@@ -46,6 +46,7 @@ public class MapsActivity extends AppCompatActivity implements
 	private GoogleMap mMap;
 	private Marker mCurrentMarker;
 	private Location mCurrentLocation;
+	private DatabaseHandler db;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,15 @@ public class MapsActivity extends AppCompatActivity implements
 		SupportMapFragment mapFragment =
 				(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
+
+		db = new DatabaseHandler(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+
 	}
 
 	@Override
@@ -255,7 +265,7 @@ public class MapsActivity extends AppCompatActivity implements
 	@Override
 	public void onInfoWindowClose(Marker marker) {
 
-		if(isMarkerOnModel(marker) == false) {
+		if(!isMarkerOnModel(marker)) {
 			Toast.makeText(this, "Marker Removed", Toast.LENGTH_SHORT).show();
 			marker.remove();
 		}
@@ -263,15 +273,12 @@ public class MapsActivity extends AppCompatActivity implements
 
 	private boolean isMarkerOnModel(Marker marker) {
 
-		boolean isMarkerOnModel = false;
-		MarkerActivity markerActivity = MarkerActivityController
-				.getMarkerActivityInLatLng(marker.getPosition());
+		boolean isMarkerOnModel;
 
-		if(markerActivity != null) {
-			isMarkerOnModel = true;
-		} else {
-			isMarkerOnModel = false;
-		}
+		MarkerActivity markerActivity = db.checkForLocation(marker.getPosition().latitude
+				, marker.getPosition().longitude);
+
+		isMarkerOnModel = markerActivity != null;
 
 		return isMarkerOnModel;
 	}
@@ -280,8 +287,8 @@ public class MapsActivity extends AppCompatActivity implements
 	private Marker getMarkerFromModel(Marker marker) {
 
 		Marker newMarker;
-		MarkerActivity markerActivity = MarkerActivityController
-				.getMarkerActivityInLatLng(marker.getPosition());
+		MarkerActivity markerActivity = db.checkForLocation(marker.getPosition().latitude
+			, marker.getPosition().longitude);
 
 		if(markerActivity != null) {
 			Log.i(CLASS_NAME, "Getting a Marker");
@@ -300,8 +307,7 @@ public class MapsActivity extends AppCompatActivity implements
 	}
 
 	private void generateAllMarkers() {
-		ArrayList<MarkerActivity> markerActivities = MarkerActivityController
-				.getAllMarkersActivities();
+		List<MarkerActivity> markerActivities = db.getAllMarkers();
 
 		if(markerActivities != null) {
 			Log.i(CLASS_NAME, "Generating Markers");
