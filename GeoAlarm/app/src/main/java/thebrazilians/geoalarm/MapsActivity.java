@@ -1,5 +1,23 @@
 package thebrazilians.geoalarm;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+import thebrazilians.geoalarm.controllers.MarkerActivityController;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
@@ -8,25 +26,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Camera;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
+import java.util.List;
+
+import thebrazilians.geoalarm.models.DatabaseHandler;
+import thebrazilians.geoalarm.models.MarkerActivity;
 
 public class MapsActivity extends AppCompatActivity implements
 		OnMyLocationButtonClickListener,
@@ -43,6 +46,7 @@ public class MapsActivity extends AppCompatActivity implements
 	private GoogleMap mMap;
 	private Marker mCurrentMarker;
 	private Location mCurrentLocation;
+	private DatabaseHandler db;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +56,22 @@ public class MapsActivity extends AppCompatActivity implements
 		SupportMapFragment mapFragment =
 				(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
+
+		db = new DatabaseHandler(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+
 	}
 
 	@Override
 	public void onMapReady(GoogleMap map) {
 		mMap = map;
 
-		getAllMarkers();
+		generateAllMarkers();
 		enableClickListeners();
 		enableMyLocation();
 		setInfoWindowAdapter();
@@ -75,9 +88,13 @@ public class MapsActivity extends AppCompatActivity implements
 
 				mCurrentMarker = getMarkerFromModel(marker);
 
-				if (marker != null) {
-					TextView textViewTitle = (TextView) view.findViewById(R.id.markerTitle);
+				TextView textViewTitle = (TextView) view.findViewById(R.id.markerTitle);
+				if (mCurrentMarker.equals(marker)) {
+					Log.i(CLASS_NAME, "Setting Standard Marker Title");
 					textViewTitle.setText("Click to Create a New Activity");
+				} else {
+					Log.i(CLASS_NAME, "Setting Specialized Marker Title");
+					textViewTitle.setText(mCurrentMarker.getTitle());
 				}
 
 				return view;
@@ -219,7 +236,6 @@ public class MapsActivity extends AppCompatActivity implements
 	@Override
 	public boolean onMarkerClick(Marker marker) {
 
-		mCurrentMarker = getMarkerFromModel(marker);
 		showMarkerDetails();
 
 		return false;
@@ -228,34 +244,80 @@ public class MapsActivity extends AppCompatActivity implements
 	@Override
 	public void onInfoWindowClick(Marker marker) {
 
-		Toast.makeText(this, "Show Activity Details", Toast.LENGTH_SHORT).show();
+		if(mCurrentMarker.equals(marker)) {
+			Intent intent = new Intent(getApplicationContext(), AddActivity.class);
+			Bundle params = new Bundle();
+			params.putDouble("latitude", mCurrentMarker.getPosition().latitude);
+			params.putDouble("longitude",mCurrentMarker.getPosition().longitude);
+			intent.putExtras(params);
+			startActivity(intent);
 
-		mCurrentMarker = getMarkerFromModel(marker);
+		} else {
+			Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+			Bundle params = new Bundle();
+			params.putDouble("latitude", mCurrentMarker.getPosition().latitude);
+			params.putDouble("longitude",mCurrentMarker.getPosition().longitude);
+			intent.putExtras(params);
+			startActivity(intent);
+		}
 	}
 
 	@Override
 	public void onInfoWindowClose(Marker marker) {
 
-		if(isMarkerOnModel(marker) == false) {
+		if(!isMarkerOnModel(marker)) {
 			Toast.makeText(this, "Marker Removed", Toast.LENGTH_SHORT).show();
 			marker.remove();
 		}
 	}
 
 	private boolean isMarkerOnModel(Marker marker) {
-		return false;
+
+		boolean isMarkerOnModel;
+
+		MarkerActivity markerActivity = db.checkForLocation(marker.getPosition().latitude
+				, marker.getPosition().longitude);
+
+		isMarkerOnModel = markerActivity != null;
+
+		return isMarkerOnModel;
 	}
 
 	// Get One Mark from Model
 	private Marker getMarkerFromModel(Marker marker) {
 
-		Log.i(CLASS_NAME, "Getting a Marker");
+		Marker newMarker;
+		MarkerActivity markerActivity = db.checkForLocation(marker.getPosition().latitude
+			, marker.getPosition().longitude);
 
-		return marker;
+		if(markerActivity != null) {
+			Log.i(CLASS_NAME, "Getting a Marker");
+
+			marker.remove();
+			newMarker = mMap.addMarker(new MarkerOptions()
+					.position(new LatLng(markerActivity.getLatitude()
+							, markerActivity.getLongitude()))
+					.title(markerActivity.getTitle()));
+		}
+		else {
+			newMarker = marker;
+		}
+
+		return newMarker;
 	}
 
-	// Get All Markers from Model
-	private void getAllMarkers() {
-		Log.i(CLASS_NAME, "Getting Markers");
+	private void generateAllMarkers() {
+		List<MarkerActivity> markerActivities = db.getAllMarkers();
+
+		if(markerActivities != null) {
+			Log.i(CLASS_NAME, "Generating Markers");
+			for(MarkerActivity markerActivity: markerActivities) {
+
+				mMap.addMarker(new MarkerOptions()
+						.position(new LatLng(markerActivity.getLatitude()
+								, markerActivity.getLongitude()))
+						.title(markerActivity.getTitle()));
+			}
+		}
 	}
 }
